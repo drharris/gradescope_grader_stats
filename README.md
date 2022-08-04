@@ -4,7 +4,7 @@ Userscript to add per-grader statistics on submissions in Gradescope
 ## Installation
 First, you need some type of userscript extension on your browser, such as GreaseMonkey or TamperMonkey.
 
-Next, Navigate here: https://greasyfork.org/en/scripts/
+Next, Navigate here: https://greasyfork.org/en/scripts/448892-gradescope-grader-stats
 
 You should be able to click the installation button on that website to install this.
 
