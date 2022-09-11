@@ -26,7 +26,7 @@
 // @name            Gradescope Grader Stats
 // @namespace       https://greasyfork.org/en/users/238426-drharris
 // @description     Displays per-grader statistics on submissions in Gradescope
-// @version         1.1.0
+// @version         1.1.1
 // @author          drharris
 // @copyright       2022, drharris (https://greasyfork.org/en/users/238426-drharris)
 // @license         MIT
@@ -77,19 +77,21 @@ $(document).ready(function () {
     // build new table
     var table = $('<table>').addClass('table').css("margin", "3em auto 0").css("width", "80%").appendTo($('#question_submissions_filter'));
     var tr = $('<tr>').appendTo($('<thead>').appendTo(table));
-    tr.append($('<th>Grader</th><th>Count</th><th>Mean</th><th>StDev</th>'));
+    tr.append($('<th>Grader</th><th>Count</th><th>Mean</th><th>Median</th><th>StDev</th>'));
     var tbody = $('<tbody>').addClass('collapse').attr('id', 'gsgsTbody').appendTo(table);
     for (var ta in dict) {
         if (ta == '') continue;
+        var grades_nonzero = dict[ta].filter(function(x){return x !== '0.0';});
         // make data summary row
         var row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
         row.append($('<td>').text(ta))
         row.append($('<td>').text(dict[ta].length));
-        row.append($('<td>').text(math.round(math.mean(dict[ta]), 2)))
-        row.append($('<td>').text(math.round(math.std(dict[ta]), 2)))
+        row.append($('<td>').text(math.round(math.mean(grades_nonzero), 2)))
+        row.append($('<td>').text(math.round(math.median(grades_nonzero), 2)))
+        row.append($('<td>').text(math.round(math.std(grades_nonzero), 2)))
         // make chart row
         var detailRow = $('<tr>').addClass('gsgsRowDetail').appendTo(tbody);
-        var detailCell = $('<td colspan=4></td>').appendTo(detailRow);
+        var detailCell = $('<td colspan=5></td>').appendTo(detailRow);
         var chartContainer = $('<div style="display:inline-block;position:relative;width:100%;height:200px;padding-left:2em;padding-right:2em"></div>').appendTo(detailCell);
         let scoreCount = dict[ta].reduce(function ( c, v ) { return ( c[v] ? ++c[v] : (c[v] = 1), c ); }, {});
         new Chart($('<canvas></canvas>').appendTo(chartContainer), {
