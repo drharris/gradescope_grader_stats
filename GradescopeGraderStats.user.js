@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021 David Harris
+ * Copyright (c) 2022 David Harris
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 // @name            Gradescope Grader Stats
 // @namespace       https://greasyfork.org/en/users/238426-drharris
 // @description     Displays per-grader statistics on submissions in Gradescope
-// @version         1.1.1
+// @version         1.2
 // @author          drharris
 // @copyright       2022, drharris (https://greasyfork.org/en/users/238426-drharris)
 // @license         MIT
@@ -62,36 +62,46 @@
 /* jshint esversion: 6 */
 
 $(document).ready(function () {
+    document.gsgsScrollToRow = function(line) {
+        document.querySelectorAll('#question_submissions_wrapper .dataTable >tbody >tr')[line].scrollIntoView({  behavior: 'smooth', block: 'center'});
+        return false;
+    }
     if (!$('#question_submissions_wrapper .dataTable >tbody >tr')) return;
     var dict = {};
+    var dict_range = {};
     var uniqueScores = [];
     // parse grade data
     $('#question_submissions_wrapper .dataTable >tbody >tr').each(function (index, tr) {
         var grader = tr.childNodes[2].textContent;
         var score = tr.childNodes[4].textContent;
+        var num = parseInt(tr.childNodes[0].textContent);
         if (!uniqueScores.includes(score)) { uniqueScores.push(score); }
         if (!(grader in dict)) { dict[grader] = []; }
+        if (!(grader in dict_range)) { dict_range[grader] = [num,num]; }
         dict[grader].push(score);
+        if(dict_range[grader][0] > num) dict_range[grader][0] = num;
+        if(dict_range[grader][1] < num) dict_range[grader][1] = num;
     });
     uniqueScores.sort((a, b) => (parseInt(a) - parseInt(b)));
     // build new table
     var table = $('<table>').addClass('table').css("margin", "3em auto 0").css("width", "80%").appendTo($('#question_submissions_filter'));
     var tr = $('<tr>').appendTo($('<thead>').appendTo(table));
-    tr.append($('<th>Grader</th><th>Count</th><th>Mean</th><th>Median</th><th>StDev</th>'));
+    tr.append($('<th>Grader</th><th>Count</th><th>Mean</th><th>Median</th><th>StDev</th><th></th>'));
     var tbody = $('<tbody>').addClass('collapse').attr('id', 'gsgsTbody').appendTo(table);
     for (var ta in dict) {
         if (ta == '') continue;
         var grades_nonzero = dict[ta].filter(function(x){return x !== '0.0';});
         // make data summary row
         var row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
-        row.append($('<td>').text(ta))
+        row.append($('<td>').text(ta+ " (" + dict_range[ta][0] + " - " + dict_range[ta][1] + ")"));
         row.append($('<td>').text(dict[ta].length));
         row.append($('<td>').text(math.round(math.mean(grades_nonzero), 2)))
         row.append($('<td>').text(math.round(math.median(grades_nonzero), 2)))
         row.append($('<td>').text(math.round(math.std(grades_nonzero), 2)))
+        row.append($('<td>').append($("<button type='button' class='btn btn-sm btn-primary' onclick='gsgsScrollToRow(" + dict_range[ta][0] + ");'>").text("↴")));
         // make chart row
         var detailRow = $('<tr>').addClass('gsgsRowDetail').appendTo(tbody);
-        var detailCell = $('<td colspan=5></td>').appendTo(detailRow);
+        var detailCell = $('<td colspan=6></td>').appendTo(detailRow);
         var chartContainer = $('<div style="display:inline-block;position:relative;width:100%;height:200px;padding-left:2em;padding-right:2em"></div>').appendTo(detailCell);
         let scoreCount = dict[ta].reduce(function ( c, v ) { return ( c[v] ? ++c[v] : (c[v] = 1), c ); }, {});
         new Chart($('<canvas></canvas>').appendTo(chartContainer), {
