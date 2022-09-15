@@ -26,7 +26,7 @@
 // @name            Gradescope Grader Stats
 // @namespace       https://greasyfork.org/en/users/238426-drharris
 // @description     Displays per-grader statistics on submissions in Gradescope
-// @version         1.2.1
+// @version         1.2.2
 // @author          drharris
 // @copyright       2022, drharris (https://greasyfork.org/en/users/238426-drharris)
 // @license         MIT
@@ -96,6 +96,7 @@ $(document).ready(function () {
     for (var ta in dict) {
         if (ta == '') continue;
         var grades_nonzero = dict[ta].filter(function(x){return x !== '0.0';});
+        if(grades_nonzero.length < 1) grades_nonzero = [0.0]; // fix the case where there is only one zero grade.
         // make data summary row
         var row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
         row.append($('<td>').text(ta));
