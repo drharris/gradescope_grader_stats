@@ -26,7 +26,7 @@
 // @name            Gradescope Grader Stats
 // @namespace       https://greasyfork.org/en/users/238426-drharris
 // @description     Displays per-grader statistics on submissions in Gradescope
-// @version         1.2.2
+// @version         1.2.3
 // @author          drharris
 // @copyright       2022, drharris (https://greasyfork.org/en/users/238426-drharris)
 // @license         MIT
@@ -65,18 +65,22 @@
 
 $(document).ready(function () {
     document.gsgsScrollToRow = function(line) {
-        document.querySelectorAll('#question_submissions_wrapper .dataTable >tbody >tr')[line].scrollIntoView({  behavior: 'smooth', block: 'center'});
+        document.querySelectorAll('#question_submissions_wrapper .dataTable >tbody >tr')[line].scrollIntoView({ behavior: 'smooth', block: 'center'});
         return false;
     }
-    if (!$('#question_submissions_wrapper .dataTable >tbody >tr')) return;
+    var gradeTable = $('#question_submissions_wrapper .dataTable >tbody >tr');
+    if (!gradeTable) return;
+    var idxNum = 0;
+    var idxGrader = $('#question_submissions_wrapper .dataTable >thead >tr th:contains("Last Graded By")').index();
+    var idxScore = $('#question_submissions_wrapper .dataTable >thead >tr th:contains("Score")').index()
     var dict = {};
     var dict_range = {};
     var uniqueScores = [];
     // parse grade data
-    $('#question_submissions_wrapper .dataTable >tbody >tr').each(function (index, tr) {
-        var grader = tr.childNodes[2].textContent;
-        var score = tr.childNodes[4].textContent;
-        var num = parseInt(tr.childNodes[0].textContent);
+    gradeTable.each(function (index, tr) {
+        var grader = tr.childNodes[idxGrader].textContent;
+        var score = tr.childNodes[idxScore].textContent;
+        var num = parseInt(tr.childNodes[idxNum].textContent);
         if (score.trim() != "")
         {
             if (!uniqueScores.includes(score)) { uniqueScores.push(score); }
