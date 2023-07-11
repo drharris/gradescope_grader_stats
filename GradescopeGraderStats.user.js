@@ -95,7 +95,7 @@ $(document).ready(function () {
     // build new table
     var table = $('<table>').addClass('table').css("margin", "3em auto 0").css("width", "80%").appendTo($('#question_submissions_filter'));
     var tr = $('<tr>').appendTo($('<thead>').appendTo(table));
-    tr.append($('<th>Grader</th><th></th><th>Count</th><th>Mean</th><th>Median</th><th>StDev</th><th></th>'));
+    tr.append($('<th>Grader</th><th></th><th>Progress</th><th>Count</th><th>Mean</th><th>Median</th><th>StDev</th><th></th>'));
     var tbody = $('<tbody>').addClass('collapse').attr('id', 'gsgsTbody').appendTo(table);
     for (var ta in dict) {
         if (ta == '') continue;
@@ -105,6 +105,7 @@ $(document).ready(function () {
         var row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
         row.append($('<td>').text(ta));
         row.append($('<td>').text(dict_range[ta][0] + " - " + dict_range[ta][1]));
+        row.append($('<td>').text(dict[ta].length + "/" + (math.abs(dict_range[ta][0] - dict_range[ta][1]) + 1)));
         row.append($('<td>').text(dict[ta].length));
         row.append($('<td>').text(math.round(math.mean(grades_nonzero), 2)))
         row.append($('<td>').text(math.round(math.median(grades_nonzero), 2)))
