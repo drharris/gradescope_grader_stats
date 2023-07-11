@@ -105,7 +105,7 @@ $(document).ready(function () {
         var row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
         row.append($('<td>').text(ta));
         row.append($('<td>').text(dict_range[ta][0] + " - " + dict_range[ta][1]));
-        row.append($('<td>').text(dict_range[ta][0] - dict_range[ta][1]));
+        row.append($('<td>').text(math.abs(dict_range[ta][0] - dict_range[ta][1]) + 1));
         row.append($('<td>').text(dict[ta].length));
         row.append($('<td>').text(math.round(math.mean(grades_nonzero), 2)))
         row.append($('<td>').text(math.round(math.median(grades_nonzero), 2)))
