@@ -26,7 +26,7 @@
 // @name            Gradescope Grader Stats
 // @namespace       https://greasyfork.org/en/users/238426-drharris
 // @description     Displays per-grader statistics on submissions in Gradescope
-// @version         1.2.4
+// @version         1.2.5
 // @author          drharris
 // @copyright       2024, drharris (https://greasyfork.org/en/users/238426-drharris)
 // @license         MIT
