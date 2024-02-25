@@ -102,15 +102,23 @@ $(document).ready(function () {
         var grades_nonzero = dict[ta].filter(function(x){return x !== '0.0';});
         if(grades_nonzero.length < 1) grades_nonzero = [0.0]; // fix the case where there is only one zero grade.
         // make data summary row
-        var row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
-        row.append($('<td>').text(ta));
-        row.append($('<td>').text(dict_range[ta][0] + " - " + dict_range[ta][1]));
-        row.append($('<td>').text(dict[ta].length + "/" + (math.abs(dict_range[ta][0] - dict_range[ta][1]) + 1)));
-        row.append($('<td>').text(dict[ta].length));
-        row.append($('<td>').text(math.round(math.mean(grades_nonzero), 2)))
-        row.append($('<td>').text(math.round(math.median(grades_nonzero), 2)))
-        row.append($('<td>').text(math.round(math.std(grades_nonzero), 2)))
-        row.append($('<td>').append($("<button type='button' class='btn btn-sm btn-primary' onclick='gsgsScrollToRow(" + dict_range[ta][0] + ");'>").text("↴")));
+        var bold = "normal";
+        var highlight = "";
+        var row;
+         if (ta == bugsnagClient.user['name']) {
+            bold = "bold";
+            row = $('<tr>').addClass('gsgsRow').css("background-color", "#d5f4e6").css("cursor", "pointer").css("height", "32px").appendTo(tbody);
+        } else {
+            row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
+        }
+        row.append($('<td>').css("font-weight", bold).text(ta));
+        row.append($('<td>').css("font-weight", bold).text(dict_range[ta][0] + " - " + dict_range[ta][1]));
+        row.append($('<td>').css("font-weight", bold).text(dict[ta].length + "/" + (math.abs(dict_range[ta][0] - dict_range[ta][1]) + 1)));
+        row.append($('<td>').css("font-weight", bold).text(dict[ta].length));
+        row.append($('<td>').css("font-weight", bold).text(math.round(math.mean(grades_nonzero), 2)))
+        row.append($('<td>').css("font-weight", bold).text(math.round(math.median(grades_nonzero), 2)))
+        row.append($('<td>').css("font-weight", bold).text(math.round(math.std(grades_nonzero), 2)))
+        row.append($('<td>').css("font-weight", bold).append($("<button type='button' class='btn btn-sm btn-primary' onclick='gsgsScrollToRow(" + dict_range[ta][0] + ");'>").text("↴")));
         // make chart row
         var detailRow = $('<tr>').addClass('gsgsRowDetail').appendTo(tbody);
         var detailCell = $('<td colspan=6></td>').appendTo(detailRow);
