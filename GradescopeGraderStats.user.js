@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2022 David Harris
+ * Copyright (c) 2024 David Harris
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,9 @@
 // @name            Gradescope Grader Stats
 // @namespace       https://greasyfork.org/en/users/238426-drharris
 // @description     Displays per-grader statistics on submissions in Gradescope
-// @version         1.2.3
+// @version         1.2.4
 // @author          drharris
-// @copyright       2022, drharris (https://greasyfork.org/en/users/238426-drharris)
+// @copyright       2024, drharris (https://greasyfork.org/en/users/238426-drharris)
 // @license         MIT
 // @homepage        https://greasyfork.org/en/scripts/423266-sample-userscript-template
 // @supportURL      https://greasyfork.org/en/scripts/423266-sample-userscript-template/feedback
@@ -76,6 +76,8 @@ $(document).ready(function () {
     var dict = {};
     var dict_range = {};
     var uniqueScores = [];
+    // create TA row style
+    $("<style type='text/css'>tr.curr_ta td{background-color:#d5f4e6;font-weight:bold;}</style>").appendTo("head");
     // parse grade data
     gradeTable.each(function (index, tr) {
         var grader = tr.childNodes[idxGrader].textContent;
@@ -104,21 +106,18 @@ $(document).ready(function () {
         // make data summary row
         var bold = "normal";
         var highlight = "";
-        var row;
-         if (ta == bugsnagClient.user['name']) {
-            bold = "bold";
-            row = $('<tr>').addClass('gsgsRow').css("background-color", "#d5f4e6").css("cursor", "pointer").css("height", "32px").appendTo(tbody);
-        } else {
-            row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
+        var row = $('<tr>').addClass('gsgsRow').css("cursor", "pointer").css("height", "32px").appendTo(tbody);
+        if (ta == bugsnagClient.user['name']) {
+            row = row.addClass('curr_ta');
         }
-        row.append($('<td>').css("font-weight", bold).text(ta));
-        row.append($('<td>').css("font-weight", bold).text(dict_range[ta][0] + " - " + dict_range[ta][1]));
-        row.append($('<td>').css("font-weight", bold).text(dict[ta].length + "/" + (math.abs(dict_range[ta][0] - dict_range[ta][1]) + 1)));
-        row.append($('<td>').css("font-weight", bold).text(dict[ta].length));
-        row.append($('<td>').css("font-weight", bold).text(math.round(math.mean(grades_nonzero), 2)))
-        row.append($('<td>').css("font-weight", bold).text(math.round(math.median(grades_nonzero), 2)))
-        row.append($('<td>').css("font-weight", bold).text(math.round(math.std(grades_nonzero), 2)))
-        row.append($('<td>').css("font-weight", bold).append($("<button type='button' class='btn btn-sm btn-primary' onclick='gsgsScrollToRow(" + dict_range[ta][0] + ");'>").text("↴")));
+        row.append($('<td>').text(ta));
+        row.append($('<td>').text(dict_range[ta][0] + " - " + dict_range[ta][1]));
+        row.append($('<td>').text(dict[ta].length + "/" + (math.abs(dict_range[ta][0] - dict_range[ta][1]) + 1)));
+        row.append($('<td>').text(dict[ta].length));
+        row.append($('<td>').text(math.round(math.mean(grades_nonzero), 2)))
+        row.append($('<td>').text(math.round(math.median(grades_nonzero), 2)))
+        row.append($('<td>').text(math.round(math.std(grades_nonzero), 2)))
+        row.append($('<td>').append($("<button type='button' class='btn btn-sm btn-primary' onclick='gsgsScrollToRow(" + dict_range[ta][0] + ");'>").text("↴")));
         // make chart row
         var detailRow = $('<tr>').addClass('gsgsRowDetail').appendTo(tbody);
         var detailCell = $('<td colspan=6></td>').appendTo(detailRow);
